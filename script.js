@@ -1,20 +1,15 @@
 'use strict';
 
 const baseAPI = 'https://restcountries.com/v3.1/name';
-const neighborBaseAPI = 'https://restcountries.com/v3.1/alpha';
+const neighbourBaseAPI = 'https://restcountries.com/v3.1/alpha';
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
 
- function renderCard() {
-  const country = JSON.parse(this.responseText)[0];
-  const border = country.borders[0];
-
-  getCountryBorder(border);
-
+const renderCountry = function(country, className = '') {
   const html = `
-    <article class="country">
+    <article class="country ${className}">
       <img class="country__img" src="${country.flags.svg}" />
       <div class="country__data">
         <h3 class="country__name">${country.name.common}</h3>
@@ -35,18 +30,36 @@ const getCountry = function(country) {
   request.open('GET', `${baseAPI}/${country}`);
   request.send();
   
-  request.addEventListener('load', renderCard.bind(request));
+  request.addEventListener('load', function() {
+    const country = JSON.parse(this.responseText)[0];
+    const borders = country.borders;
+
+    renderCountry(country);
+    if(!borders) return;
+
+    borders.forEach(border => {
+      getCountryNeighbour(border);
+    })
+  
+  });
 };
 
-const getCountryBorder = function(neighborCode) {
+const getCountryNeighbour = function(neighbourCode) {
   const request = new XMLHttpRequest();
-  request.open('GET', `${neighborBaseAPI}/${neighborCode}`);
+  request.open('GET', `${neighbourBaseAPI}/${neighbourCode}`);
   request.send();
   
-  request.addEventListener('load', renderCard.bind());
+  request.addEventListener('load', function() {
+    const neigbourCountry = JSON.parse(this.responseText)[0];
+    const border = neigbourCountry.borders[0];
+  
+    renderCountry(neigbourCountry, 'neighbour')
+    //getCountryNeighbour(border);
+  
+  });
 };
 
 
-getCountry('portugal');
+getCountry('spain');
 
 
