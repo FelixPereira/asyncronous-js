@@ -53,7 +53,7 @@ const getCountryNeighbour = function(neighbourCode) {
     const neigbourCountry = JSON.parse(this.responseText)[0];
     const border = neigbourCountry.borders[0];
   
-    renderCountry(neigbourCountry, 'neighbour')
+    renderCountry(neigbourCountry, 'neighbour') 
     //getCountryNeighbour(border);
   
   });
@@ -62,4 +62,12 @@ const getCountryNeighbour = function(neighbourCode) {
 
 getCountry('spain');
 
+
+const getCountryData = function(country) {
+  fetch(`${baseAPI}/${country}`)
+    .then(response => response.json())
+    .then(data => console.log(data[0]));
+}
+
+getCountryData('portugal')
 
