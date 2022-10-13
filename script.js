@@ -25,6 +25,7 @@ const renderCountry = function(country, className = '') {
   countriesContainer.style.opacity = 1;
 }
 
+/*
 const getCountry = function(country) {
   const request = new XMLHttpRequest();
   request.open('GET', `${baseAPI}/${country}`);
@@ -43,6 +44,7 @@ const getCountry = function(country) {
   
   });
 };
+*/
 
 const getCountryNeighbour = function(neighbourCode) {
   const request = new XMLHttpRequest();
@@ -60,14 +62,29 @@ const getCountryNeighbour = function(neighbourCode) {
 };
 
 
-getCountry('spain');
+// getCountry('portugal');
 
 
 const getCountryData = function(country) {
   fetch(`${baseAPI}/${country}`)
     .then(response => response.json())
-    .then(data => console.log(data[0]));
+    .then(data => {
+      const country = data[0];
+      renderCountry(country);
+
+      const neigbour = country.borders[0];
+
+      if(!neigbour) return;
+
+      return fetch(`https://restcountries.com/v3.1/alpha/${neigbour}`);
+    })
+    .then(response => response.json())
+    .then(data => {
+      const neigbourCountry = data[0];
+
+      renderCountry(neigbourCountry, 'neighbour')
+    });
 }
 
-getCountryData('portugal')
+getCountryData('canada')
 
