@@ -83,8 +83,11 @@ const getCountryData = function(country) {
       const neigbourCountry = data[0];
 
       renderCountry(neigbourCountry, 'neighbour')
-    });
+    })
+    .catch(error => console.log('Mensagem: ',error))
 }
 
-getCountryData('canada')
+btn.addEventListener('click', () => getCountryData('canada'));
+
+
 
