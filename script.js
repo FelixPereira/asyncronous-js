@@ -44,7 +44,7 @@ const getCountry = function(country) {
   
   });
 };
-*/
+
 
 const getCountryNeighbour = function(neighbourCode) {
   const request = new XMLHttpRequest();
@@ -63,11 +63,19 @@ const getCountryNeighbour = function(neighbourCode) {
 
 
 // getCountry('portugal');
+*/
 
+const renderError = function(message) {
+  countriesContainer.insertAdjacentText('beforeend', message);
+  countriesContainer.style.opacity = 1;
+}
 
 const getCountryData = function(country) {
   fetch(`${baseAPI}/${country}`)
-    .then(response => response.json())
+    .then(response => {
+      if(!response.ok) throw new Error('Country not found!');
+      return response.json(); 
+    })
     .then(data => {
       const country = data[0];
       renderCountry(country);
@@ -76,18 +84,25 @@ const getCountryData = function(country) {
 
       if(!neigbour) return;
 
-      return fetch(`https://restcountries.com/v3.1/alpha/${neigbour}`);
+      return fetch(`https://restcountries.com/v3.1/alpha/'${neigbour}'`);
     })
-    .then(response => response.json())
+    .then(response => {
+      if(!response.ok) throw new Error('Country not found!');
+      return response.json(); 
+    })
     .then(data => {
       const neigbourCountry = data[0];
 
       renderCountry(neigbourCountry, 'neighbour')
     })
-    .catch(error => console.log('Mensagem: ',error))
+    .catch(error => {
+      renderError(`Something went wrong: ${error.message}`);
+    })
 }
 
 btn.addEventListener('click', () => getCountryData('canada'));
+getCountryData('brasil');
+
 
 
 
