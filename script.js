@@ -63,32 +63,42 @@ const getCountryNeighbour = function(neighbourCode) {
 
 
 // getCountry('portugal');
-*/
+
 
 const renderError = function(message) {
   countriesContainer.insertAdjacentText('beforeend', message);
   countriesContainer.style.opacity = 1;
 }
 
-const getCountryData = function(country) {
-  fetch(`${baseAPI}/${country}`)
+
+const getJSON = function(url, errorMsg) {
+  return fetch(url)
     .then(response => {
-      if(!response.ok) throw new Error('Country not found!');
+      if(!response.ok) throw new Error(errorMsg);
       return response.json(); 
     })
+}
+
+console.log(getJSON(`${baseAPI}/portugal`));
+
+const getCountryData = function(country) {
+  getJSON(
+    `${baseAPI}/${country}`, 
+    'Country not found!'
+    )
     .then(data => {
       const country = data[0];
       renderCountry(country);
 
       const neigbour = country.borders[0];
 
-      if(!neigbour) return;
 
-      return fetch(`https://restcountries.com/v3.1/alpha/'${neigbour}'`);
-    })
-    .then(response => {
-      if(!response.ok) throw new Error('Country not found!');
-      return response.json(); 
+      if(!country.borders) throw new Error('No neighbour country found!');
+
+      return getJSON(
+        `https://restcountries.com/v3.1/alpha/${neigbour}`, 
+        'Country not found!'
+      );
     })
     .then(data => {
       const neigbourCountry = data[0];
@@ -101,7 +111,53 @@ const getCountryData = function(country) {
 }
 
 btn.addEventListener('click', () => getCountryData('canada'));
-getCountryData('brasil');
+getCountryData('australia');
+
+
+# CODING CHALLENGE
+*/
+
+// 330610516493881468693x29960
+
+const getCountryData = function(country) {
+  fetch(`${baseAPI}/${country}`)
+    .then(res => {
+      if(!res.ok) throw new Error('Country not found!');
+
+      return res.json();
+    })
+    .then(data => {
+      const country = data[0];
+
+      renderCountry(country);
+    })
+    .catch(err => console.log(err.message));
+}
+
+const whereAmI = function(latitude, longitude) {
+  fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=330610516493881468693x29960`)
+    .then(res => {
+      if(!res.ok) throw new Error('Country not found!');
+      return res.json()
+    })
+    .then(data => {
+      console.log(`Você está em ${data.city}, ${data.country}.`);
+      console.log(data)
+      getCountryData(data.country);
+    })
+    .catch(err => console.log(err.message));
+}
+
+whereAmI(19.037, 72.873);
+/*
+navigator.geolocation.getCurrentPosition(posiction => {
+  const latitude = posiction.coords.latitude;
+  const longitude = posiction.coords.longitude;
+
+
+});
+*/
+
 
 
 
