@@ -115,7 +115,7 @@ getCountryData('australia');
 
 
 # CODING CHALLENGE
-*/
+
 
 // 330610516493881468693x29960
 
@@ -154,11 +154,30 @@ navigator.geolocation.getCurrentPosition(posiction => {
   const latitude = posiction.coords.latitude;
   const longitude = posiction.coords.longitude;
 
-
 });
+
+console.log('Test start');
+setTimeout(() => console.log('0 sec timer'), 0);
+Promise.resolve('Resolved promise 1').then(res => setTimeout(() => {
+  console.log(res)
+  
+}, 5));
+console.log('Test end');
+
+
+  BUILDING A SIMPLE PROMISE
 */
 
 
+const lotterryPromise = new Promise(function(resolve, reject) {
+  console.log('Loading...');
+  setTimeout(() => {
+    if(Math.random() >= 0.5) {
+      resolve('You WIN!');
+    } else {
+      reject(new Error('You LOST you money'));
+    }
+  }, 2);
+});
 
-
-
+lotterryPromise.then(res => console.log(res)).catch(err => console.error(err.message));
