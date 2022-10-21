@@ -198,7 +198,7 @@ getPosition()
   .catch(err => console.log(err));
 
 # CODING CHALLENGE 2
-*/
+
 
 const wait = function(time) {
   return new Promise((resolve) => {
@@ -239,3 +239,14 @@ createImage(path1)
   })
   .then(() => image.style.display = 'none')
   .catch(err => console.log(err));
+
+# ASYNC AWAIT
+*/
+
+const whereAmI = async function(country) {
+  const res = await fetch(`${baseAPI}/${country}`);
+  const data = await res.json();
+  renderCountry(data[0]);
+}
+
+whereAmI('angola');
