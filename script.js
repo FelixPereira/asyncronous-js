@@ -71,6 +71,7 @@ const renderError = function(message) {
   countriesContainer.style.opacity = 1;
 }
 
+*/
 
 const getJSON = function(url, errorMsg) {
   return fetch(url)
@@ -79,6 +80,8 @@ const getJSON = function(url, errorMsg) {
       return response.json(); 
     })
 }
+
+/*
 
 console.log(getJSON(`${baseAPI}/portugal`));
 
@@ -241,12 +244,56 @@ createImage(path1)
   .catch(err => console.log(err));
 
 # ASYNC AWAIT
-*/
+
 
 const whereAmI = async function(country) {
   const res = await fetch(`${baseAPI}/${country}`);
   const data = await res.json();
   renderCountry(data[0]);
+
+  return data[0];
 }
 
-whereAmI('angola');
+console.log('1. First');
+/*
+whereAmI('angola')
+  .then(res => console.log(`2. ${res.fifa}`))
+  .catch(err => console.log(err))
+  .finally(() => console.log('3. THIRD'));
+
+(async function() {
+  try {
+    const res = await whereAmI('angola');
+    console.log(`2. ${res.fifa}`)
+  } catch(err) {
+    console.log(err.message);
+  } finally {
+    console.log('3. THIRD')
+  }
+})();
+
+*/
+
+const get3Countries = async function(c1, c2, c3) {
+  try {
+    // const [data1] = await getJSON(`${baseAPI}/${c1}`);
+    // const [data2] = await getJSON(`${baseAPI}/${c2}`);
+    // const [data3] = await getJSON(`${baseAPI}/${c3}`);
+    // console.log([data1.capital[0], data2.capital[0], data3.capital[0]]);
+
+    const data = await Promise.all([
+      getJSON(`${baseAPI}/${c1}`),
+      getJSON(`${baseAPI}/${c2}`),
+      getJSON(`${baseAPI}/${c3}`)
+    ]);
+
+    console.log(data.map(d => d[0].capital[0]))
+
+
+
+  } catch(err) {
+    console.error(err.message);
+  }
+}
+
+get3Countries('portugal', 'angola', 'canada');
