@@ -4,6 +4,7 @@ const baseAPI = 'https://restcountries.com/v3.1/name';
 const neighbourBaseAPI = 'https://restcountries.com/v3.1/alpha';
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
+const imagesContainer = document.querySelector('.images');
 
 ///////////////////////////////////////
 
@@ -165,8 +166,7 @@ Promise.resolve('Resolved promise 1').then(res => setTimeout(() => {
 console.log('Test end');
 
 
-  BUILDING A SIMPLE PROMISE
-*/
+# BUILDING A SIMPLE PROMISE
 
 
 const lotterryPromise = new Promise(function(resolve, reject) {
@@ -181,3 +181,61 @@ const lotterryPromise = new Promise(function(resolve, reject) {
 });
 
 lotterryPromise.then(res => console.log(res)).catch(err => console.error(err.message));
+
+
+
+const getPosition = function() {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      position => resolve(position), 
+      err => reject(err)
+    );
+  })
+};
+
+getPosition()
+  .then(res => console.log(res))
+  .catch(err => console.log(err));
+
+# CODING CHALLENGE 2
+*/
+
+const wait = function(time) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time * 1000);
+  });
+};
+
+const path1 = 'img/img-1.jpg';
+const path2 = 'img/img-2.jpg';
+const path3 = 'img/img-3.jpg';
+let image;
+
+const createImage = function(imgPath) {
+  return new Promise((resolve, reject) => {
+    const imgEl = document.createElement('img');
+    imgEl.src = imgPath;
+    
+    imgEl.addEventListener('load', () => {
+      imagesContainer.insertAdjacentElement('afterbegin', imgEl);
+      resolve(imgEl);
+    });
+    imgEl.addEventListener('error', () => reject('Image not found!'));
+  });
+}
+
+createImage(path1)
+  .then(res => {
+    image = res;
+    return wait(2);
+  })
+  .then(() => {
+    image.style.display = 'none';
+    return createImage(path2);
+  })
+  .then(res => {
+    image = res;
+    return wait(2);
+  })
+  .then(() => image.style.display = 'none')
+  .catch(err => console.log(err));
